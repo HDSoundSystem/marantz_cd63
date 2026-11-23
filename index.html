@@ -8,9 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================================================
-           VARIABLES & RESET GLOBAL (GEOMETRIE FIXE ZERO DEFORMATION)
-           ========================================================================== */
+        
         :root {
             --gold-bright: #e6c670;
             --gold-mid: #c5a044;
@@ -44,10 +42,7 @@
             gap: 20px;
         }
 
-        /* ==========================================================================
-           CONTENEUR DE MISE À L'ÉCHELLE PROPORTIONNELLE EXACTE (#playerStage)
-           Dimensions calculées dynamiquement en JS : (1400 * scale) x (263 * scale)
-           ========================================================================== */
+      
         #playerStage {
             position: relative;
             width: 1400px;
@@ -56,7 +51,7 @@
             margin: 0 auto;
         }
 
-        /* Châssis natif verrouillé à exactement 1400px x 263px */
+        
         #marantzChassis {
             position: absolute;
             top: 0;
@@ -143,9 +138,7 @@
         .foot-left { left: 110px; }
         .foot-right { right: 110px; }
 
-        /* ==========================================================================
-           SÉRIGRAPHIE DORÉE & TYPOGRAPHIE MATÉRIELLE
-           ========================================================================== */
+        
         .gold-label {
             color: var(--gold-bright);
             text-shadow: 0 1px 1px rgba(0, 0, 0, 0.95);
@@ -155,9 +148,7 @@
             white-space: nowrap;
         }
 
-        /* ==========================================================================
-           COLONNE GAUCHE (left: 34px, width: 472px) — Tiroir CD élargi aux proportions réelles
-           ========================================================================== */
+      
         .left-col-upper {
             position: absolute;
             top: 16px;
@@ -185,6 +176,16 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95));
             line-height: 1;
+        }
+
+        .marantz-logo-img {
+            height: 20px;
+            width: auto;
+            max-width: 145px;
+            object-fit: contain;
+            display: block;
+            mix-blend-mode: lighten;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95));
         }
 
         .model-designation {
@@ -242,7 +243,17 @@
             flex-direction: column;
             align-items: center;
             color: var(--gold-mid);
-            opacity: 0.9;
+            opacity: 0.95;
+        }
+
+        .cd-logo-img {
+            height: 46px;
+            width: auto;
+            max-width: 110px;
+            object-fit: contain;
+            display: block;
+            mix-blend-mode: lighten;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95));
         }
 
         .servo-caption {
@@ -966,53 +977,15 @@
                 <!-- 1. COLONNE GAUCHE : Logo Marantz + Tiroir CD -->
                 <div class="left-col-upper">
                     <div class="brand-header">
-                        <span class="marantz-logo">marantz</span>
+                        <img src="img/marantz_logo.png" alt="marantz" class="marantz-logo-img" onerror="this.outerHTML='<span class=\'marantz-logo\'>marantz</span>'">
                         <span class="model-designation gold-label">COMPACT DISC PLAYER CD-63 MkII KI</span>
                     </div>
 
                     <div class="cd-tray-recess">
                         <div id="cdTrayDoor" class="cd-tray-door" title="Cliquer ou appuyer sur OPEN/CLOSE pour charger des fichiers audio">
                             <div class="disc-emblem">
-                                <!-- Reproduction vectorielle exacte du logo Compact Disc Digital Audio fourni -->
-                                <svg width="76" height="44" viewBox="0 0 360 215" aria-label="Compact Disc Digital Audio">
-                                    <!-- COMPACT aligné en haut au-dessus de "isc" -->
-                                    <text x="234" y="45" text-anchor="middle" fill="currentColor" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="37" letter-spacing="4.2">COMPACT</text>
-
-                                    <!-- Lettre "d" avec sa haute hampe gauche et son contre-poinçon arrondi -->
-                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
-                                        M 66,14 H 88 V 163 H 42
-                                        Q 22,163 22,143 V 81
-                                        Q 22,61 42,61 H 66 V 14 Z
-                                        M 46,85 V 139 H 66 V 85 H 46 Z
-                                    "/>
-
-                                    <!-- Lettre "i" en contour arrondi -->
-                                    <rect x="103" y="61" width="24" height="102" rx="7" fill="none" stroke="currentColor" stroke-width="8.5"/>
-
-                                    <!-- Lettre "s" en contour arrondi -->
-                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
-                                        M 156,61 H 229
-                                        Q 241,61 241,73 V 85 H 167 V 100 H 225
-                                        Q 241,100 241,116 V 147
-                                        Q 241,163 225,163 H 154
-                                        Q 142,163 142,151 V 139 H 217 V 124 H 158
-                                        Q 142,124 142,108 V 77
-                                        Q 142,61 156,61 Z
-                                    "/>
-
-                                    <!-- Lettre "c" en contour arrondi -->
-                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
-                                        M 272,61 H 326
-                                        Q 338,61 338,73 V 85 H 280 V 139 H 338 V 151
-                                        Q 338,163 326,163 H 272
-                                        Q 256,163 256,147 V 77
-                                        Q 256,61 272,61 Z
-                                    "/>
-
-                                    <!-- DIGITAL AUDIO -->
-                                    <text x="180" y="201" text-anchor="middle" fill="currentColor" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="31" letter-spacing="4.8">DIGITAL AUDIO</text>
-                                </svg>
-                                <span class="servo-caption gold-label">DIGITAL SERVO DRIVE</span>
+                                <img id="cdLogoImg" src="img/cd_logo.png" alt="Compact Disc Digital Audio" class="cd-logo-img">
+                                <span class="servo-caption gold-label" style="background: linear-gradient(180deg, #f7dfc2 0%, #d2a372 55%, #a87948 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DIGITAL SERVO DRIVE</span>
                             </div>
                         </div>
                     </div>
@@ -1203,6 +1176,7 @@
             <div class="dock-buttons">
                 <input type="file" id="fileInput" accept="audio/*,.flac,.wav,.mp3,.ogg,.m4a,.aac" multiple hidden>
                 <button id="btnImportAudio" class="btn-gold">+ Charger des fichiers audio (FLAC, WAV, MP3, OGG, AAC, M4A)</button>
+                <button id="btnDownloadCdLogo" class="btn-secondary" title="Télécharger l'image PNG haute résolution du logo Compact Disc doré">Télécharger le logo CD doré (PNG HD)</button>
                 <button id="btnEjectAll" class="btn-secondary">Éjecter le disque</button>
             </div>
 
@@ -1765,6 +1739,12 @@
 
             // Gestion fichiers, barre de progression et volume
             document.getElementById('btnImportAudio').addEventListener('click', () => fileInput.click());
+            document.getElementById('btnDownloadCdLogo').addEventListener('click', () => {
+                const a = document.createElement('a');
+                a.download = 'cd_logo.png';
+                a.href = 'img/cd_logo.png';
+                a.click();
+            });
             document.getElementById('btnEjectAll').addEventListener('click', () => {
                 if (!state.powered) return;
                 resetToEmptyDisc();
