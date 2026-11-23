@@ -187,6 +187,15 @@
             line-height: 1;
         }
 
+        .marantz-logo-img {
+            height: 20px;
+            width: auto;
+            max-width: 145px;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95));
+        }
+
         .model-designation {
             font-size: 8.5px;
             letter-spacing: 0.14em;
@@ -966,7 +975,7 @@
                 <!-- 1. COLONNE GAUCHE : Logo Marantz + Tiroir CD -->
                 <div class="left-col-upper">
                     <div class="brand-header">
-                        <span class="marantz-logo">marantz</span>
+                        <img src="img/marantz_logo.jpg" alt="marantz" class="marantz-logo-img" onerror="this.outerHTML='<span class=\'marantz-logo\'>marantz</span>'">
                         <span class="model-designation gold-label">COMPACT DISC PLAYER CD-63 MkII KI</span>
                     </div>
 
