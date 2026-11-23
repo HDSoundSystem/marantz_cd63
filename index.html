@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marantz CD-63 MkII KI Signature — Lecteur CD Audiophile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@700;800&family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           VARIABLES & RESET GLOBAL (GEOMETRIE FIXE ZERO DEFORMATION)
+           ========================================================================== */
+        :root {
+            --gold-bright: #e6c670;
+            --gold-mid: #c5a044;
+            --gold-dark: #7a5c18;
+            --chassis-black: #111214;
+            --vfd-cyan: #28f0ff;
+            --vfd-glow: rgba(0, 210, 255, 0.45);
+            --vfd-dim: rgba(40, 240, 255, 0.14);
+            --vfd-brightness: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 50% 35%, #23252a 0%, #101114 65%, #070709 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #e5e7eb;
+            padding: 18px 12px;
+            overflow-x: hidden;
+            gap: 20px;
+        }
+
+        /* ==========================================================================
+           CONTENEUR DE MISE À L'ÉCHELLE PROPORTIONNELLE EXACTE (#playerStage)
+           Dimensions calculées dynamiquement en JS : (1400 * scale) x (263 * scale)
+           ========================================================================== */
+        #playerStage {
+            position: relative;
+            width: 1400px;
+            height: 263px;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+
+        /* Châssis natif verrouillé à exactement 1400px x 263px */
+        #marantzChassis {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1400px;
+            height: 263px;
+            transform-origin: top left;
+            will-change: transform;
+        }
+
+        /* Façade principale plate en aluminium brossé noir anodisé (1400px x 235px) */
+        .front-faceplate {
+            position: relative;
+            width: 1400px;
+            height: 235px;
+            background-color: var(--chassis-black);
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.017) 0px,
+                    rgba(255, 255, 255, 0.017) 1px,
+                    transparent 1px,
+                    transparent 2px
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.09) 0%,
+                    rgba(255, 255, 255, 0.02) 5%,
+                    rgba(0, 0, 0, 0.22) 65%,
+                    rgba(255, 255, 255, 0.04) 66.5%,
+                    rgba(0, 0, 0, 0.62) 100%
+                );
+            border-radius: 4px;
+            border: 1px solid #050506;
+            border-top: 1px solid rgba(255, 255, 255, 0.18);
+            border-bottom: 1px solid #020203;
+            box-shadow:
+                0 26px 52px rgba(0, 0, 0, 0.92),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.9);
+            z-index: 5;
+        }
+
+        /* Ligne de séparation horizontale nette à 154px du haut (~65.5%) */
+        .panel-seam {
+            position: absolute;
+            top: 154px;
+            left: 0;
+            width: 1400px;
+            height: 3px;
+            background: linear-gradient(
+                180deg,
+                #030304 0%,
+                #08080a 55%,
+                rgba(255, 255, 255, 0.11) 100%
+            );
+            box-shadow: inset 0 1px 2px #000;
+            pointer-events: none;
+        }
+
+        /* Pieds amortisseurs cylindriques en aluminium champagne/bronze brossé (28px) */
+        .hifi-foot {
+            position: absolute;
+            top: 234px;
+            width: 132px;
+            height: 26px;
+            background: linear-gradient(
+                90deg,
+                #473c2b 0%,
+                #9e8968 18%,
+                #e3d4b8 36%,
+                #8c7859 58%,
+                #c4b08e 82%,
+                #3a3022 100%
+            );
+            border-radius: 0 0 8px 8px;
+            border-bottom: 2px solid #231d14;
+            box-shadow:
+                0 12px 22px rgba(0, 0, 0, 0.88),
+                inset 0 2px 3px rgba(0, 0, 0, 0.65);
+            z-index: 2;
+        }
+
+        .foot-left { left: 110px; }
+        .foot-right { right: 110px; }
+
+        /* ==========================================================================
+           SÉRIGRAPHIE DORÉE & TYPOGRAPHIE MATÉRIELLE
+           ========================================================================== */
+        .gold-label {
+            color: var(--gold-bright);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.95);
+            letter-spacing: 0.13em;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ==========================================================================
+           COLONNE GAUCHE (left: 34px, width: 472px) — Tiroir CD élargi aux proportions réelles
+           ========================================================================== */
+        .left-col-upper {
+            position: absolute;
+            top: 16px;
+            left: 34px;
+            width: 472px;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            height: 24px;
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+
+        .marantz-logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: 0.04em;
+            text-transform: lowercase;
+            background: linear-gradient(180deg, #f8e29c 0%, #d4af37 55%, #8f6d1e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95));
+            line-height: 1;
+        }
+
+        .model-designation {
+            font-size: 8.5px;
+            letter-spacing: 0.14em;
+            color: var(--gold-bright);
+            white-space: nowrap;
+        }
+
+        /* Tiroir CD motorisé encastré (466px x 82px) */
+        .cd-tray-recess {
+            width: 466px;
+            height: 82px;
+            background: #060608;
+            border-radius: 3px;
+            padding: 2px;
+            border: 1px solid #030304;
+            border-bottom-color: rgba(255, 255, 255, 0.11);
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.98);
+            perspective: 800px;
+        }
+
+        .cd-tray-door {
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.015) 0px,
+                    rgba(255, 255, 255, 0.015) 1px,
+                    transparent 1px,
+                    transparent 2px
+                ),
+                linear-gradient(180deg, #212227 0%, #141518 52%, #0e0f12 100%);
+            border-radius: 2px;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease;
+            transform-origin: bottom center;
+        }
+
+        .cd-tray-door.is-open {
+            transform: translateY(12px) rotateX(45deg) scale(1.02);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.95), 0 0 14px rgba(230, 198, 112, 0.18);
+            border-top-color: var(--gold-bright);
+        }
+
+        .disc-emblem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gold-mid);
+            opacity: 0.9;
+        }
+
+        .servo-caption {
+            font-size: 7px;
+            letter-spacing: 0.22em;
+            margin-top: 3px;
+        }
+
+        /* Bas gauche (sous la ligne de séparation à 154px) */
+        .left-col-lower {
+            position: absolute;
+            top: 166px;
+            left: 34px;
+            width: 466px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            gap: 34px;
+        }
+
+        .power-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .power-caption {
+            font-size: 8px;
+        }
+
+        .btn-power {
+            width: 68px;
+            height: 26px;
+            background: linear-gradient(180deg, #27292f 0%, #151619 100%);
+            border: 1px solid #050506;
+            border-top-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .btn-power:active {
+            transform: translateY(1px);
+        }
+
+        .power-led {
+            position: absolute;
+            right: 7px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+            transition: all 0.2s ease;
+        }
+
+        .power-led.standby {
+            background: #ef4444;
+            box-shadow: 0 0 6px #ef4444;
+        }
+
+        /* Plaque dorée rectangulaire K.I. Signature (146px x 30px) */
+        .ki-plaque {
+            width: 146px;
+            height: 30px;
+            margin-top: 12px;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.08) 0px,
+                    rgba(255, 255, 255, 0.08) 1px,
+                    transparent 1px,
+                    transparent 3px
+                ),
+                linear-gradient(135deg, #f3dc99 0%, #d4af53 38%, #b3892d 65%, #e8cc7d 100%);
+            border-radius: 2px;
+            border: 1px solid #6b5014;
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.85),
+                inset 0 1px 1px rgba(255, 255, 255, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ki-plaque-script {
+            font-family: 'Alex Brush', cursive;
+            font-size: 20px;
+            color: #4a3508;
+            text-shadow: 0 1px 0 rgba(255, 245, 200, 0.65);
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        /* ==========================================================================
+           COLONNE CENTRALE (left: 514px, width: 592px)
+           ========================================================================== */
+        .center-col-upper {
+            position: absolute;
+            top: 16px;
+            left: 514px;
+            width: 592px;
+        }
+
+        .hdam-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 24px;
+            margin-bottom: 10px;
+            padding-right: 4px;
+        }
+
+        .hdam-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            color: var(--gold-bright);
+            text-shadow: 0 1px 1px #000;
+        }
+
+        /* Vitre acrylique VFD continue (592px x 82px) */
+        .vfd-window {
+            width: 592px;
+            height: 82px;
+            background: linear-gradient(180deg, #040507 0%, #090b0e 100%);
+            border-radius: 4px;
+            border: 1px solid #020203;
+            border-bottom-color: rgba(255, 255, 255, 0.12);
+            box-shadow:
+                inset 0 4px 12px rgba(0, 0, 0, 0.98),
+                0 1px 0 rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: stretch;
+            padding: 8px 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Reflet vitré subtil */
+        .vfd-window::after {
+            content: '';
+            position: absolute;
+            top: -45%;
+            left: -5%;
+            width: 110%;
+            height: 75%;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.008) 100%
+            );
+            transform: rotate(-1.5deg);
+            pointer-events: none;
+        }
+
+        /* Zone d'affichage fluorescent VFD (392px) */
+        .vfd-screen {
+            width: 392px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding-right: 12px;
+            filter: brightness(var(--vfd-brightness));
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+
+        .vfd-screen.is-off {
+            opacity: 0.03;
+        }
+
+        .vfd-flags-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 8.5px;
+            letter-spacing: 0.08em;
+        }
+
+        .vfd-flag {
+            color: var(--vfd-dim);
+            transition: color 0.15s ease, text-shadow 0.15s ease;
+        }
+
+        .vfd-flag.lit {
+            color: var(--vfd-cyan);
+            text-shadow: 0 0 6px var(--vfd-glow);
+        }
+
+        .vfd-digits-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .vfd-track-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            line-height: 1;
+            color: var(--vfd-cyan);
+            text-shadow: 0 0 8px var(--vfd-glow), 0 0 16px rgba(40, 240, 255, 0.35);
+            letter-spacing: 0.05em;
+        }
+
+        .vfd-time-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 30px;
+            line-height: 1;
+            color: var(--vfd-cyan);
+            text-shadow: 0 0 8px var(--vfd-glow), 0 0 16px rgba(40, 240, 255, 0.35);
+            letter-spacing: 0.06em;
+        }
+
+        .vfd-bottom-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ir-sensor-tag {
+            font-size: 6.5px;
+            letter-spacing: 0.15em;
+            color: var(--gold-mid);
+            opacity: 0.85;
+            white-space: nowrap;
+        }
+
+        .vfd-calendar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 9px;
+        }
+
+        .cal-item {
+            color: var(--vfd-dim);
+            transition: all 0.15s ease;
+        }
+
+        .cal-item.present {
+            color: var(--vfd-cyan);
+            text-shadow: 0 0 5px var(--vfd-glow);
+        }
+
+        .cal-item.playing {
+            color: #ffffff;
+            text-shadow: 0 0 8px var(--vfd-cyan), 0 0 12px var(--vfd-cyan);
+            font-weight: 700;
+            border-bottom: 1px solid var(--vfd-cyan);
+        }
+
+        /* Matrice 2x3 de 6 petits boutons ronds intégrés dans la vitre (176px) */
+        .vfd-micro-controls {
+            width: 176px;
+            display: grid;
+            grid-template-columns: repeat(3, 58px);
+            grid-template-rows: repeat(2, 1fr);
+            align-items: center;
+            justify-items: center;
+            padding-left: 6px;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .micro-btn-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .micro-btn-label {
+            font-size: 6.8px;
+        }
+
+        .btn-micro-round {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #484b54 0%, #1c1d22 65%, #09090b 100%);
+            border: 1px solid #040405;
+            box-shadow:
+                0 2px 3px rgba(0, 0, 0, 0.95),
+                inset 0 1px 1px rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+        }
+
+        .btn-micro-round:active {
+            transform: translateY(1px);
+        }
+
+        .btn-micro-round.lit-ring {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 6px rgba(230, 198, 112, 0.55);
+        }
+
+        /* Bas centre (sous la ligne de séparation à 154px) */
+        .center-col-lower {
+            position: absolute;
+            top: 166px;
+            left: 514px;
+            width: 592px;
+            height: 54px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-bottom: 6px;
+        }
+
+        .eject-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .eject-caption {
+            font-size: 7.2px;
+        }
+
+        .btn-open-close {
+            width: 48px;
+            height: 24px;
+            background: linear-gradient(180deg, #27292e 0%, #15161a 100%);
+            border: 1px solid #050506;
+            border-top-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            box-shadow: 0 3px 4px rgba(0, 0, 0, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-bright);
+            cursor: pointer;
+        }
+
+        .btn-open-close:active {
+            transform: translateY(1px);
+        }
+
+        /* Rangée des 10 touches d'accès direct 1..9, 0 (chaque touche 38px x 15px) */
+        .direct-keys-strip {
+            display: flex;
+            align-items: flex-end;
+            gap: 11px;
+        }
+
+        .direct-key-cell {
+            width: 38px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .direct-key-num {
+            font-size: 8px;
+        }
+
+        .btn-direct-key {
+            width: 38px;
+            height: 15px;
+            background: linear-gradient(180deg, #2c2e34 0%, #16171b 100%);
+            border: 1px solid #050506;
+            border-top-color: rgba(255, 255, 255, 0.22);
+            border-radius: 1.5px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+
+        .btn-direct-key:hover {
+            border-top-color: var(--gold-bright);
+        }
+
+        .btn-direct-key:active {
+            transform: translateY(1px);
+        }
+
+        /* ==========================================================================
+           COLONNE DROITE (left: 1130px, width: 236px)
+           ========================================================================== */
+        .right-col-upper {
+            position: absolute;
+            top: 26px;
+            left: 1130px;
+            width: 236px;
+            height: 108px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 3 gros boutons carrés STOP, PLAY, PAUSE (68px x 44px, gap: 12px -> total 228px) */
+        .transport-buttons-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .transport-cell {
+            width: 68px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .transport-caption {
+            font-size: 8px;
+        }
+
+        .btn-transport {
+            width: 68px;
+            height: 44px;
+            background: linear-gradient(180deg, #27292e 0%, #15161a 100%);
+            border: 1px solid #050506;
+            border-top-color: rgba(255, 255, 255, 0.22);
+            border-radius: 2.5px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-bright);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .btn-transport:active {
+            transform: translateY(1px);
+        }
+
+        .btn-transport.active-transport {
+            border-bottom: 2px solid var(--gold-bright);
+            box-shadow: 0 2px 7px rgba(230, 198, 112, 0.28), inset 0 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .play-status-pip {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+
+        .btn-transport.active-transport .play-status-pip {
+            background: var(--vfd-cyan);
+            box-shadow: 0 0 6px var(--vfd-cyan);
+        }
+
+        /* 2 barres basculeurs horizontales (106px x 14px, gap: 16px -> total 228px) */
+        .rockers-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .rocker-cell {
+            width: 106px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .rocker-icons {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+            color: var(--gold-bright);
+        }
+
+        .rocker-switch {
+            width: 106px;
+            height: 14px;
+            background: linear-gradient(180deg, #2b2d33 0%, #15161a 100%);
+            border: 1px solid #050506;
+            border-top-color: rgba(255, 255, 255, 0.22);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.92);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .rocker-side {
+            width: 53px;
+            height: 14px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .rocker-side:first-child {
+            border-right: 1px solid rgba(0, 0, 0, 0.7);
+        }
+
+        .rocker-side:hover {
+            background: rgba(230, 198, 112, 0.08);
+        }
+
+        .rocker-side:active {
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        /* Bas droite (sous la ligne de séparation à 154px) : Prise Casque PHONES */
+        .right-col-lower {
+            position: absolute;
+            top: 166px;
+            left: 1130px;
+            width: 228px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phones-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .phones-caption {
+            font-size: 7.5px;
+        }
+
+        .phones-socket {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(
+                circle,
+                #030304 42%,
+                #7a5c18 46%,
+                #f5dc93 58%,
+                #c59b38 70%,
+                #47340b 76%,
+                #0b0c0e 82%
+            );
+            box-shadow:
+                0 2px 5px rgba(0, 0, 0, 0.95),
+                inset 0 0 3px rgba(0, 0, 0, 0.9);
+            transition: transform 0.15s ease;
+        }
+
+        .phones-unit:hover .phones-socket {
+            transform: scale(1.06);
+        }
+
+        /* ==========================================================================
+           BARRE DE GESTION AUDIO & PLAYLIST COMPACTE (SOUS LE LECTEUR)
+           ========================================================================== */
+        .audiophile-dock {
+            width: 100%;
+            max-width: 1180px;
+            background: linear-gradient(180deg, #16171b 0%, #0f1013 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(230, 198, 112, 0.32);
+            border-radius: 6px;
+            padding: 14px 18px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .audiophile-dock.is-visible {
+            display: flex;
+        }
+
+        .dock-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .dock-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(180deg, #e6c670 0%, #b89135 100%);
+            color: #141109;
+            font-weight: 700;
+            font-size: 11.5px;
+            letter-spacing: 0.05em;
+            padding: 7px 14px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-gold:hover {
+            filter: brightness(1.07);
+        }
+
+        .btn-secondary {
+            background: #202228;
+            color: #d1d5db;
+            font-size: 11.5px;
+            padding: 7px 12px;
+            border-radius: 4px;
+            border: 1px solid #323540;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold-mid);
+            color: #fff;
+        }
+
+        .phones-level-box {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: #0b0c0e;
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid #24262e;
+            font-size: 11px;
+            color: var(--gold-bright);
+            letter-spacing: 0.08em;
+        }
+
+        .phones-level-box input[type="range"] {
+            accent-color: var(--gold-bright);
+            width: 100px;
+            cursor: pointer;
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            color: var(--vfd-cyan);
+        }
+
+        .progress-rail {
+            flex: 1;
+            height: 6px;
+            background: #08090b;
+            border-radius: 3px;
+            border: 1px solid #252830;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--vfd-cyan), var(--gold-bright));
+        }
+
+        .playlist-scroll {
+            max-height: 175px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.15s ease;
+        }
+
+        .playlist-item:hover {
+            background: rgba(230, 198, 112, 0.08);
+        }
+
+        .playlist-item.is-current {
+            background: rgba(40, 240, 255, 0.09);
+            border-left: 2px solid var(--vfd-cyan);
+            color: var(--vfd-cyan);
+        }
+
+        .dock-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #9ca3af;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         STAGE DE DIMENSIONNEMENT EXACT (ZÉRO DÉFORMATION SUR TOUT ÉCRAN)
+         ========================================================================== -->
+    <div id="playerStage">
+        <div id="marantzChassis">
+            <main class="front-faceplate" aria-label="Lecteur CD Marantz CD-63 MkII KI Signature">
+                
+                <!-- 1. COLONNE GAUCHE : Logo Marantz + Tiroir CD -->
+                <div class="left-col-upper">
+                    <div class="brand-header">
+                        <span class="marantz-logo">marantz</span>
+                        <span class="model-designation gold-label">COMPACT DISC PLAYER CD-63 MkII KI</span>
+                    </div>
+
+                    <div class="cd-tray-recess">
+                        <div id="cdTrayDoor" class="cd-tray-door" title="Cliquer ou appuyer sur OPEN/CLOSE pour charger des fichiers audio">
+                            <div class="disc-emblem">
+                                <!-- Reproduction vectorielle exacte du logo Compact Disc Digital Audio fourni -->
+                                <svg width="76" height="44" viewBox="0 0 360 215" aria-label="Compact Disc Digital Audio">
+                                    <!-- COMPACT aligné en haut au-dessus de "isc" -->
+                                    <text x="234" y="45" text-anchor="middle" fill="currentColor" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="37" letter-spacing="4.2">COMPACT</text>
+
+                                    <!-- Lettre "d" avec sa haute hampe gauche et son contre-poinçon arrondi -->
+                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
+                                        M 66,14 H 88 V 163 H 42
+                                        Q 22,163 22,143 V 81
+                                        Q 22,61 42,61 H 66 V 14 Z
+                                        M 46,85 V 139 H 66 V 85 H 46 Z
+                                    "/>
+
+                                    <!-- Lettre "i" en contour arrondi -->
+                                    <rect x="103" y="61" width="24" height="102" rx="7" fill="none" stroke="currentColor" stroke-width="8.5"/>
+
+                                    <!-- Lettre "s" en contour arrondi -->
+                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
+                                        M 156,61 H 229
+                                        Q 241,61 241,73 V 85 H 167 V 100 H 225
+                                        Q 241,100 241,116 V 147
+                                        Q 241,163 225,163 H 154
+                                        Q 142,163 142,151 V 139 H 217 V 124 H 158
+                                        Q 142,124 142,108 V 77
+                                        Q 142,61 156,61 Z
+                                    "/>
+
+                                    <!-- Lettre "c" en contour arrondi -->
+                                    <path fill="none" stroke="currentColor" stroke-width="8.5" stroke-linejoin="round" d="
+                                        M 272,61 H 326
+                                        Q 338,61 338,73 V 85 H 280 V 139 H 338 V 151
+                                        Q 338,163 326,163 H 272
+                                        Q 256,163 256,147 V 77
+                                        Q 256,61 272,61 Z
+                                    "/>
+
+                                    <!-- DIGITAL AUDIO -->
+                                    <text x="180" y="201" text-anchor="middle" fill="currentColor" font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif" font-weight="900" font-size="31" letter-spacing="4.8">DIGITAL AUDIO</text>
+                                </svg>
+                                <span class="servo-caption gold-label">DIGITAL SERVO DRIVE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. COLONNE CENTRALE : HDAM + Vitre VFD Continue + 6 Boutons Ronds -->
+                <div class="center-col-upper">
+                    <div class="hdam-row">
+                        <span class="hdam-logo">HDAM</span>
+                    </div>
+
+                    <div class="vfd-window">
+                        <!-- Écran VFD Cyan -->
+                        <div id="vfdScreen" class="vfd-screen">
+                            <div class="vfd-flags-row">
+                                <span id="flagTrack" class="vfd-flag lit">TRACK</span>
+                                <span id="flagTotal" class="vfd-flag">TOTAL</span>
+                                <span id="flagTime" class="vfd-flag lit">TIME</span>
+                                <span id="flagRem" class="vfd-flag">REM</span>
+                                <span id="flagPgm" class="vfd-flag">PGM</span>
+                                <span id="flagRepeat" class="vfd-flag">REPEAT</span>
+                                <span id="flagDisc" class="vfd-flag lit">DISC</span>
+                            </div>
+
+                            <div class="vfd-digits-row">
+                                <span id="vfdTrackDigits" class="vfd-track-val">01</span>
+                                <span id="vfdTimeDigits" class="vfd-time-val">00:00</span>
+                            </div>
+
+                            <div class="vfd-bottom-strip">
+                                <span class="ir-sensor-tag">IR SENSOR</span>
+                                <div id="vfdCalendar" class="vfd-calendar"></div>
+                            </div>
+                        </div>
+
+                        <!-- Matrice 2x3 des 6 boutons ronds intégrés dans la vitre -->
+                        <div class="vfd-micro-controls">
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">TIME</span>
+                                <button id="btnTime" class="btn-micro-round" title="Mode Temps (Écoulé / Restant Piste / Restant Total)"></button>
+                            </div>
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">EDIT</span>
+                                <button id="btnEdit" class="btn-micro-round" title="Mode Répétition (OFF / ALL / ONE)"></button>
+                            </div>
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">PROG</span>
+                                <button id="btnProg" class="btn-micro-round" title="Mode Programmation"></button>
+                            </div>
+
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">DIMMER</span>
+                                <button id="btnDimmer" class="btn-micro-round" title="Luminosité VFD (Fort / Moyen / Faible / Éteint)"></button>
+                            </div>
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">RECALL</span>
+                                <button id="btnRecall" class="btn-micro-round" title="Rappel du programme / Infos piste"></button>
+                            </div>
+                            <div class="micro-btn-cell">
+                                <span class="micro-btn-label gold-label">CANCEL</span>
+                                <button id="btnCancel" class="btn-micro-round" title="Effacer le programme"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. COLONNE DROITE : 3 Gros Boutons Carrés + 2 Basculeurs Fins -->
+                <div class="right-col-upper">
+                    <div class="transport-buttons-row">
+                        <div class="transport-cell">
+                            <span class="transport-caption gold-label">STOP</span>
+                            <button id="btnStop" class="btn-transport" title="Stop">
+                                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="2" width="8" height="8"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="transport-cell">
+                            <span class="transport-caption gold-label">PLAY</span>
+                            <button id="btnPlay" class="btn-transport" title="Lecture">
+                                <span class="play-status-pip"></span>
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><polygon points="3,1.5 10.5,6 3,10.5"/></svg>
+                            </button>
+                        </div>
+
+                        <div class="transport-cell">
+                            <span class="transport-caption gold-label">PAUSE</span>
+                            <button id="btnPause" class="btn-transport" title="Pause">
+                                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+                                    <rect x="2.5" y="2" width="2.4" height="8"/>
+                                    <rect x="7.1" y="2" width="2.4" height="8"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="rockers-row">
+                        <div class="rocker-cell">
+                            <div class="rocker-icons">
+                                <svg width="13" height="8" viewBox="0 0 16 10" fill="currentColor">
+                                    <rect x="1" y="1" width="1.6" height="8"/>
+                                    <polygon points="8.5,1 2.8,5 8.5,9"/>
+                                    <polygon points="14.5,1 8.8,5 14.5,9"/>
+                                </svg>
+                                <svg width="13" height="8" viewBox="0 0 16 10" fill="currentColor">
+                                    <polygon points="1.5,1 7.2,5 1.5,9"/>
+                                    <polygon points="7.5,1 13.2,5 7.5,9"/>
+                                    <rect x="13.4" y="1" width="1.6" height="8"/>
+                                </svg>
+                            </div>
+                            <div class="rocker-switch">
+                                <button id="btnPrev" class="rocker-side" title="Piste précédente"></button>
+                                <button id="btnNext" class="rocker-side" title="Piste suivante"></button>
+                            </div>
+                        </div>
+
+                        <div class="rocker-cell">
+                            <div class="rocker-icons">
+                                <svg width="12" height="8" viewBox="0 0 14 10" fill="currentColor">
+                                    <polygon points="7,1 1.2,5 7,9"/>
+                                    <polygon points="13,1 7.2,5 13,9"/>
+                                </svg>
+                                <svg width="12" height="8" viewBox="0 0 14 10" fill="currentColor">
+                                    <polygon points="1,1 6.8,5 1,9"/>
+                                    <polygon points="7,1 12.8,5 7,9"/>
+                                </svg>
+                            </div>
+                            <div class="rocker-switch">
+                                <button id="btnRew" class="rocker-side" title="Recherche arrière (-5s)"></button>
+                                <button id="btnFf" class="rocker-side" title="Recherche avant (+5s)"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIGNE DE SÉPARATION HORIZONTALE À 154px -->
+                <div class="panel-seam"></div>
+
+                <!-- 4. BAS GAUCHE : POWER + Plaque dorée K.I. Signature -->
+                <div class="left-col-lower">
+                    <div class="power-unit">
+                        <span class="power-caption gold-label">POWER</span>
+                        <button id="btnPower" class="btn-power" title="Allumer / Éteindre le lecteur">
+                            <span id="powerLed" class="power-led"></span>
+                        </button>
+                    </div>
+
+                    <div class="ki-plaque" title="Ken Ishiwata Signature Edition">
+                        <span class="ki-plaque-script">K.I. Signature</span>
+                    </div>
+                </div>
+
+                <!-- 5. BAS CENTRE : OPEN/CLOSE + 10 Touches d'accès direct (1..9, 0) -->
+                <div class="center-col-lower">
+                    <div class="eject-unit">
+                        <span class="eject-caption gold-label">OPEN/CLOSE</span>
+                        <button id="btnOpenClose" class="btn-open-close" title="Ouvrir le tiroir et importer des fichiers audio">
+                            <svg width="11" height="10" viewBox="0 0 12 10" fill="currentColor">
+                                <polygon points="6,1 1.5,6 10.5,6"/>
+                                <rect x="1.5" y="7.5" width="9" height="1.5"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="directKeysStrip" class="direct-keys-strip"></div>
+                </div>
+
+                <!-- 6. BAS DROITE : Prise Casque PHONES cerclée d'or -->
+                <div class="right-col-lower">
+                    <div id="btnPhonesSocket" class="phones-unit" title="Cliquer pour afficher / masquer la playlist et le contrôle de volume">
+                        <span class="phones-caption gold-label">PHONES</span>
+                        <div class="phones-socket"></div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Pieds amortisseurs en métal champagne/bronze brossé -->
+            <div class="hifi-foot foot-left"></div>
+            <div class="hifi-foot foot-right"></div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         BARRE COMPACTE DE GESTION DES FICHIERS AUDIO & LISTE DE LECTURE
+         ========================================================================== -->
+    <section id="audiophileDock" class="audiophile-dock" aria-label="Discothèque et chargement de fichiers audio">
+        <div class="dock-toolbar">
+            <div class="dock-buttons">
+                <input type="file" id="fileInput" accept="audio/*,.flac,.wav,.mp3,.ogg,.m4a,.aac" multiple hidden>
+                <button id="btnImportAudio" class="btn-gold">+ Charger des fichiers audio (FLAC, WAV, MP3, OGG, AAC, M4A)</button>
+                <button id="btnEjectAll" class="btn-secondary">Éjecter le disque</button>
+            </div>
+
+            <div class="phones-level-box">
+                <span>PHONES LEVEL</span>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.05">
+                <span id="volumePercent" style="font-family: 'Share Tech Mono', monospace;">5%</span>
+            </div>
+        </div>
+
+        <div class="progress-row">
+            <span id="timeElapsedLabel">00:00</span>
+            <div id="progressRail" class="progress-rail" title="Cliquer pour naviguer dans le morceau">
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+            <span id="timeTotalLabel">00:00</span>
+        </div>
+
+        <div id="playlistScroll" class="playlist-scroll"></div>
+
+        <div class="dock-status">
+            <span id="statusBanner">NO DISC — Appuyez sur OPEN/CLOSE ou glissez-déposez vos fichiers audio sur le lecteur.</span>
+            <span style="color: var(--gold-mid); font-family: 'Share Tech Mono', monospace;">HDAM PURE CLASS-A</span>
+        </div>
+    </section>
+
+    <audio id="audioEngine" crossorigin="anonymous"></audio>
+
+    <script>
+        /**
+         * ==========================================================================
+         * MOTEUR AUDIO & MISE À L'ÉCHELLE HOMOTHÉTIQUE SANS DÉFORMATION
+         * Marantz CD-63 MkII KI Signature — Lecture exclusive des fichiers audio
+         * ==========================================================================
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const playerStage = document.getElementById('playerStage');
+            const marantzChassis = document.getElementById('marantzChassis');
+            const audioEngine = document.getElementById('audioEngine');
+
+            // Éléments VFD & Façade
+            const vfdScreen = document.getElementById('vfdScreen');
+            const vfdTrackDigits = document.getElementById('vfdTrackDigits');
+            const vfdTimeDigits = document.getElementById('vfdTimeDigits');
+            const vfdCalendar = document.getElementById('vfdCalendar');
+            const cdTrayDoor = document.getElementById('cdTrayDoor');
+            const powerLed = document.getElementById('powerLed');
+            const directKeysStrip = document.getElementById('directKeysStrip');
+
+            // Indicateurs VFD
+            const flagTrack = document.getElementById('flagTrack');
+            const flagTotal = document.getElementById('flagTotal');
+            const flagTime = document.getElementById('flagTime');
+            const flagRem = document.getElementById('flagRem');
+            const flagPgm = document.getElementById('flagPgm');
+            const flagRepeat = document.getElementById('flagRepeat');
+            const flagDisc = document.getElementById('flagDisc');
+
+            // Boutons
+            const btnPlay = document.getElementById('btnPlay');
+            const btnPause = document.getElementById('btnPause');
+            const btnStop = document.getElementById('btnStop');
+            const btnProg = document.getElementById('btnProg');
+            const btnEdit = document.getElementById('btnEdit');
+
+            // Dock & Playlist
+            const audiophileDock = document.getElementById('audiophileDock');
+            const btnPhonesSocket = document.getElementById('btnPhonesSocket');
+            const fileInput = document.getElementById('fileInput');
+            const playlistScroll = document.getElementById('playlistScroll');
+            const statusBanner = document.getElementById('statusBanner');
+            const progressRail = document.getElementById('progressRail');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const timeElapsedLabel = document.getElementById('timeElapsedLabel');
+            const timeTotalLabel = document.getElementById('timeTotalLabel');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const volumePercent = document.getElementById('volumePercent');
+
+            // État interne du lecteur
+            const state = {
+                powered: true,
+                trayOpen: false,
+                isPlaying: false,
+                isPaused: false,
+                tracks: [],
+                currentIndex: 0,
+                timeMode: 'ELAPSED',        // 'ELAPSED' | 'REMAIN_TRACK' | 'REMAIN_TOTAL'
+                dimmerLevel: 0,             // 0: 100%, 1: 65%, 2: 35%, 3: OFF
+                repeatMode: 'OFF',          // 'OFF' | 'ALL' | 'ONE'
+                progMode: false,
+                programQueue: [],
+                programPointer: 0,
+                volume: 0.05
+            };
+
+            /**
+             * Mise à l'échelle homothétique stricte sans aucune déformation
+             */
+            function updateChassisScale() {
+                const baseWidth = 1400;
+                const baseHeight = 263;
+                const availableWidth = Math.max(300, window.innerWidth - 24);
+                const scale = Math.min(availableWidth / baseWidth, 1.15);
+
+                playerStage.style.width = `${Math.round(baseWidth * scale)}px`;
+                playerStage.style.height = `${Math.round(baseHeight * scale)}px`;
+                marantzChassis.style.transform = `scale(${scale})`;
+            }
+
+            window.addEventListener('resize', updateChassisScale);
+            updateChassisScale();
+
+            /**
+             * Construit les 10 touches 1..0 et la grille calendrier VFD 1..15
+             */
+            function buildHardwareControls() {
+                const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+                directKeysStrip.innerHTML = keys.map(num => `
+                    <div class="direct-key-cell">
+                        <span class="direct-key-num gold-label">${num}</span>
+                        <button class="btn-direct-key" data-key="${num}" title="Accès direct piste ${num === 0 ? 10 : num}"></button>
+                    </div>
+                `).join('');
+
+                let calHtml = '';
+                for (let i = 1; i <= 15; i++) {
+                    calHtml += `<span id="vfdCal-${i}" class="cal-item">${i}</span>`;
+                }
+                vfdCalendar.innerHTML = calHtml;
+            }
+
+            /**
+             * Formate les secondes en MM:SS
+             */
+            function formatMMSS(seconds) {
+                if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            /**
+             * Réinitialise le lecteur à l'état vide (NO DISC) en libérant les URLs blob
+             */
+            function resetToEmptyDisc() {
+                stopAudio();
+                state.tracks.forEach(track => {
+                    if (track.url) URL.revokeObjectURL(track.url);
+                });
+                state.tracks = [];
+                state.currentIndex = 0;
+                state.programQueue = [];
+                state.programPointer = 0;
+                state.progMode = false;
+                audioEngine.removeAttribute('src');
+                audioEngine.load();
+                timeElapsedLabel.textContent = '00:00';
+                timeTotalLabel.textContent = '00:00';
+                progressBarFill.style.width = '0%';
+                renderPlaylist();
+                updateVFD();
+                statusBanner.textContent = "NO DISC — Appuyez sur OPEN/CLOSE ou glissez-déposez vos fichiers audio sur le lecteur.";
+            }
+
+            /**
+             * Met à jour l'ensemble de l'afficheur VFD cyan et les voyants
+             */
+            function updateVFD() {
+                powerLed.classList.toggle('standby', !state.powered);
+                vfdScreen.classList.toggle('is-off', !state.powered || state.dimmerLevel === 3);
+
+                const brightnessMap = [1, 0.65, 0.35, 0];
+                document.documentElement.style.setProperty('--vfd-brightness', brightnessMap[state.dimmerLevel]);
+
+                btnPlay.classList.toggle('active-transport', state.powered && state.isPlaying && !state.isPaused);
+                btnPause.classList.toggle('active-transport', state.powered && state.isPaused);
+                btnProg.classList.toggle('lit-ring', state.powered && state.progMode);
+                btnEdit.classList.toggle('lit-ring', state.powered && state.repeatMode !== 'OFF');
+
+                if (!state.powered) return;
+
+                // Indicateurs supérieurs
+                flagTrack.classList.toggle('lit', state.tracks.length > 0 && state.timeMode !== 'REMAIN_TOTAL');
+                flagTotal.classList.toggle('lit', state.timeMode === 'REMAIN_TOTAL');
+                flagTime.classList.toggle('lit', true);
+                flagRem.classList.toggle('lit', state.timeMode !== 'ELAPSED');
+                flagPgm.classList.toggle('lit', state.progMode || state.programQueue.length > 0);
+                flagRepeat.classList.toggle('lit', state.repeatMode !== 'OFF');
+                flagDisc.classList.toggle('lit', state.tracks.length > 0);
+
+                // Grille calendrier 1..15
+                const activeSet = (state.progMode || state.programQueue.length > 0)
+                    ? state.programQueue
+                    : state.tracks.map((_, idx) => idx);
+
+                for (let i = 1; i <= 15; i++) {
+                    const node = document.getElementById(`vfdCal-${i}`);
+                    if (!node) continue;
+                    node.className = 'cal-item';
+                    if (i - 1 === state.currentIndex && state.tracks.length > 0) {
+                        node.classList.add('playing');
+                    } else if (activeSet.includes(i - 1)) {
+                        node.classList.add('present');
+                    }
+                }
+
+                if (state.tracks.length === 0) {
+                    vfdTrackDigits.textContent = 'NO';
+                    vfdTimeDigits.textContent = 'DISC';
+                    return;
+                }
+
+                const track = state.tracks[state.currentIndex];
+                const current = audioEngine.currentTime || 0;
+                const duration = Number.isFinite(audioEngine.duration) ? audioEngine.duration : (track.duration || 0);
+
+                vfdTrackDigits.textContent = String(state.currentIndex + 1).padStart(2, '0');
+
+                if (state.timeMode === 'ELAPSED') {
+                    vfdTimeDigits.textContent = formatMMSS(current);
+                } else if (state.timeMode === 'REMAIN_TRACK') {
+                    vfdTimeDigits.textContent = `-${formatMMSS(Math.max(0, duration - current))}`;
+                } else {
+                    let remainingTotal = Math.max(0, duration - current);
+                    for (let i = state.currentIndex + 1; i < state.tracks.length; i++) {
+                        remainingTotal += state.tracks[i].duration || 0;
+                    }
+                    vfdTimeDigits.textContent = `-${formatMMSS(remainingTotal)}`;
+                }
+            }
+
+            /**
+             * Sélectionne une piste et démarre éventuellement la lecture
+             */
+            function selectTrack(index, autoPlay = true) {
+                if (state.tracks.length === 0) return;
+                const safeIndex = ((index % state.tracks.length) + state.tracks.length) % state.tracks.length;
+                state.currentIndex = safeIndex;
+
+                const track = state.tracks[safeIndex];
+                audioEngine.src = track.url;
+                audioEngine.load();
+
+                renderPlaylist();
+                updateVFD();
+                statusBanner.textContent = `Piste ${String(safeIndex + 1).padStart(2, '0')} : ${track.title}`;
+
+                if (autoPlay) {
+                    playAudio();
+                } else {
+                    state.isPlaying = false;
+                    state.isPaused = false;
+                    updateVFD();
+                }
+            }
+
+            async function playAudio() {
+                if (!state.powered) return;
+                if (state.tracks.length === 0) {
+                    toggleTray(true);
+                    fileInput.click();
+                    return;
+                }
+                if (state.trayOpen) toggleTray(false);
+
+                if (!audioEngine.src && state.tracks[state.currentIndex]) {
+                    audioEngine.src = state.tracks[state.currentIndex].url;
+                }
+
+                try {
+                    await audioEngine.play();
+                    state.isPlaying = true;
+                    state.isPaused = false;
+                    updateVFD();
+                } catch (err) {
+                    statusBanner.textContent = "Cliquez sur PLAY pour démarrer la lecture audio.";
+                }
+            }
+
+            function pauseAudio() {
+                if (!state.powered || state.tracks.length === 0) return;
+                if (state.isPlaying && !state.isPaused) {
+                    audioEngine.pause();
+                    state.isPaused = true;
+                } else if (state.isPaused) {
+                    playAudio();
+                    return;
+                }
+                updateVFD();
+            }
+
+            function stopAudio() {
+                audioEngine.pause();
+                audioEngine.currentTime = 0;
+                state.isPlaying = false;
+                state.isPaused = false;
+                progressBarFill.style.width = '0%';
+                timeElapsedLabel.textContent = '00:00';
+                updateVFD();
+            }
+
+            function nextTrack(fromAutoEnd = false) {
+                if (!state.powered || state.tracks.length === 0) return;
+
+                if (fromAutoEnd && state.repeatMode === 'ONE') {
+                    audioEngine.currentTime = 0;
+                    playAudio();
+                    return;
+                }
+
+                if (state.programQueue.length > 0) {
+                    if (state.programPointer + 1 < state.programQueue.length) {
+                        state.programPointer++;
+                        selectTrack(state.programQueue[state.programPointer], state.isPlaying || fromAutoEnd);
+                    } else if (state.repeatMode === 'ALL') {
+                        state.programPointer = 0;
+                        selectTrack(state.programQueue[0], state.isPlaying || fromAutoEnd);
+                    } else {
+                        stopAudio();
+                    }
+                    return;
+                }
+
+                if (state.currentIndex + 1 < state.tracks.length) {
+                    selectTrack(state.currentIndex + 1, state.isPlaying || fromAutoEnd);
+                } else if (state.repeatMode === 'ALL' || !fromAutoEnd) {
+                    selectTrack(0, state.isPlaying || fromAutoEnd);
+                } else {
+                    stopAudio();
+                }
+            }
+
+            function prevTrack() {
+                if (!state.powered || state.tracks.length === 0) return;
+                if (audioEngine.currentTime > 3) {
+                    audioEngine.currentTime = 0;
+                    updateVFD();
+                    return;
+                }
+                if (state.programQueue.length > 0) {
+                    state.programPointer = (state.programPointer - 1 + state.programQueue.length) % state.programQueue.length;
+                    selectTrack(state.programQueue[state.programPointer], state.isPlaying);
+                    return;
+                }
+                selectTrack(state.currentIndex - 1, state.isPlaying);
+            }
+
+            function toggleTray(forceState) {
+                if (!state.powered) return;
+                state.trayOpen = typeof forceState === 'boolean' ? forceState : !state.trayOpen;
+                cdTrayDoor.classList.toggle('is-open', state.trayOpen);
+                if (state.trayOpen) {
+                    stopAudio();
+                    statusBanner.textContent = "TIROIR OUVERT — Sélectionnez ou glissez-déposez vos fichiers audio.";
+                }
+            }
+
+            function handleFilesImport(fileList) {
+                const audioFiles = Array.from(fileList).filter(f =>
+                    f.type.startsWith('audio/') || /\.(mp3|wav|flac|ogg|m4a|aac)$/i.test(f.name)
+                );
+                if (audioFiles.length === 0) {
+                    statusBanner.textContent = "Format audio non supporté. Utilisez FLAC, WAV, MP3, OGG, AAC ou M4A.";
+                    return;
+                }
+
+                const loaded = audioFiles.map(file => ({
+                    title: file.name.replace(/\.[^/.]+$/, ""),
+                    duration: 0,
+                    url: URL.createObjectURL(file)
+                }));
+
+                const wasEmpty = state.tracks.length === 0;
+                const firstNewIndex = state.tracks.length;
+                state.tracks = [...state.tracks, ...loaded];
+
+                toggleTray(false);
+                selectTrack(wasEmpty ? 0 : firstNewIndex, true);
+                statusBanner.textContent = `${loaded.length} fichier(s) audio chargé(s) (${state.tracks.length} piste(s) sur le disque).`;
+            }
+
+            function renderPlaylist() {
+                if (state.tracks.length === 0) {
+                    playlistScroll.innerHTML = `<div style="padding:12px; text-align:center; color:#6b7280; font-size:12px;">Aucun disque inséré — Cliquez sur « Charger des fichiers audio », appuyez sur OPEN/CLOSE ou déposez vos fichiers ici.</div>`;
+                    return;
+                }
+
+                playlistScroll.innerHTML = state.tracks.map((track, idx) => {
+                    const isCurrent = idx === state.currentIndex;
+                    const durText = track.duration > 0 ? formatMMSS(track.duration) : '--:--';
+                    return `
+                        <div class="playlist-item ${isCurrent ? 'is-current' : ''}" data-index="${idx}">
+                            <span><strong>${String(idx + 1).padStart(2, '0')}.</strong> ${track.title}</span>
+                            <span style="font-family: 'Share Tech Mono', monospace; opacity: 0.85;">${durText}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                playlistScroll.querySelectorAll('.playlist-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        if (!state.powered) return;
+                        const idx = Number(el.dataset.index);
+                        selectTrack(idx, true);
+                    });
+                });
+            }
+
+            // Événements du moteur HTML5 Audio
+            audioEngine.addEventListener('loadedmetadata', () => {
+                if (state.tracks[state.currentIndex] && Number.isFinite(audioEngine.duration)) {
+                    state.tracks[state.currentIndex].duration = audioEngine.duration;
+                    timeTotalLabel.textContent = formatMMSS(audioEngine.duration);
+                    renderPlaylist();
+                    updateVFD();
+                }
+            });
+
+            audioEngine.addEventListener('timeupdate', () => {
+                const current = audioEngine.currentTime || 0;
+                const duration = Number.isFinite(audioEngine.duration) ? audioEngine.duration : 0;
+                timeElapsedLabel.textContent = formatMMSS(current);
+                timeTotalLabel.textContent = formatMMSS(duration);
+                progressBarFill.style.width = duration > 0 ? `${(current / duration) * 100}%` : '0%';
+                updateVFD();
+            });
+
+            audioEngine.addEventListener('ended', () => {
+                nextTrack(true);
+            });
+
+            // Commandes de la façade Marantz
+            document.getElementById('btnPower').addEventListener('click', () => {
+                state.powered = !state.powered;
+                if (!state.powered) {
+                    stopAudio();
+                    state.trayOpen = false;
+                    cdTrayDoor.classList.remove('is-open');
+                    statusBanner.textContent = "STANDBY — Lecteur en veille.";
+                } else {
+                    statusBanner.textContent = state.tracks.length === 0
+                        ? "NO DISC — Appuyez sur OPEN/CLOSE ou glissez-déposez vos fichiers audio."
+                        : `Marantz CD-63 MkII KI Signature prêt (${state.tracks.length} piste(s)).`;
+                }
+                updateVFD();
+            });
+
+            document.getElementById('btnOpenClose').addEventListener('click', () => {
+                if (!state.powered) return;
+                if (!state.trayOpen) {
+                    toggleTray(true);
+                    fileInput.click();
+                } else {
+                    toggleTray(false);
+                }
+            });
+
+            cdTrayDoor.addEventListener('click', () => {
+                if (!state.powered) return;
+                toggleTray(true);
+                fileInput.click();
+            });
+
+            btnPlay.addEventListener('click', playAudio);
+            btnPause.addEventListener('click', pauseAudio);
+            btnStop.addEventListener('click', () => {
+                if (!state.powered) return;
+                stopAudio();
+            });
+
+            document.getElementById('btnNext').addEventListener('click', () => nextTrack(false));
+            document.getElementById('btnPrev').addEventListener('click', prevTrack);
+
+            document.getElementById('btnFf').addEventListener('click', () => {
+                if (!state.powered || state.tracks.length === 0) return;
+                audioEngine.currentTime = Math.min(audioEngine.duration || 0, audioEngine.currentTime + 5);
+                updateVFD();
+            });
+
+            document.getElementById('btnRew').addEventListener('click', () => {
+                if (!state.powered || state.tracks.length === 0) return;
+                audioEngine.currentTime = Math.max(0, audioEngine.currentTime - 5);
+                updateVFD();
+            });
+
+            // 6 boutons ronds intégrés dans la vitre VFD
+            document.getElementById('btnTime').addEventListener('click', () => {
+                if (!state.powered) return;
+                const modes = ['ELAPSED', 'REMAIN_TRACK', 'REMAIN_TOTAL'];
+                state.timeMode = modes[(modes.indexOf(state.timeMode) + 1) % modes.length];
+                updateVFD();
+            });
+
+            document.getElementById('btnEdit').addEventListener('click', () => {
+                if (!state.powered) return;
+                const modes = ['OFF', 'ALL', 'ONE'];
+                state.repeatMode = modes[(modes.indexOf(state.repeatMode) + 1) % modes.length];
+                statusBanner.textContent = `Mode répétition : ${state.repeatMode}`;
+                updateVFD();
+            });
+
+            document.getElementById('btnProg').addEventListener('click', () => {
+                if (!state.powered || state.tracks.length === 0) return;
+                state.progMode = !state.progMode;
+                if (state.progMode) {
+                    statusBanner.textContent = "MODE PROG — Appuyez sur les touches 1..0 pour programmer l'ordre des pistes.";
+                } else if (state.programQueue.length > 0) {
+                    state.programPointer = 0;
+                    selectTrack(state.programQueue[0], false);
+                    statusBanner.textContent = `Programme prêt (${state.programQueue.length} piste(s)). Appuyez sur PLAY.`;
+                }
+                updateVFD();
+            });
+
+            document.getElementById('btnDimmer').addEventListener('click', () => {
+                if (!state.powered) return;
+                state.dimmerLevel = (state.dimmerLevel + 1) % 4;
+                updateVFD();
+            });
+
+            document.getElementById('btnRecall').addEventListener('click', () => {
+                if (!state.powered) return;
+                if (state.programQueue.length > 0) {
+                    const list = state.programQueue.map(i => String(i + 1).padStart(2, '0')).join(' → ');
+                    statusBanner.textContent = `Programme enregistré : ${list}`;
+                } else if (state.tracks.length > 0) {
+                    statusBanner.textContent = `Piste ${String(state.currentIndex + 1).padStart(2, '0')}/${String(state.tracks.length).padStart(2, '0')} — ${state.tracks[state.currentIndex].title}`;
+                }
+            });
+
+            document.getElementById('btnCancel').addEventListener('click', () => {
+                if (!state.powered) return;
+                state.programQueue = [];
+                state.programPointer = 0;
+                state.progMode = false;
+                statusBanner.textContent = "Programme effacé.";
+                updateVFD();
+            });
+
+            // Touches d'accès direct 1..0
+            directKeysStrip.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-direct-key');
+                if (!btn || !state.powered || state.tracks.length === 0) return;
+                const raw = Number(btn.dataset.key);
+                const targetIndex = (raw === 0 ? 10 : raw) - 1;
+                if (targetIndex < 0 || targetIndex >= state.tracks.length) return;
+
+                if (state.progMode) {
+                    state.programQueue.push(targetIndex);
+                    statusBanner.textContent = `PROG : piste ${String(targetIndex + 1).padStart(2, '0')} ajoutée (${state.programQueue.length} au total).`;
+                    updateVFD();
+                } else {
+                    selectTrack(targetIndex, true);
+                }
+            });
+
+            // Affichage / masquage de la playlist au clic sur la prise jack PHONES
+            btnPhonesSocket.addEventListener('click', () => {
+                audiophileDock.classList.toggle('is-visible');
+            });
+
+            // Gestion fichiers, barre de progression et volume
+            document.getElementById('btnImportAudio').addEventListener('click', () => fileInput.click());
+            document.getElementById('btnEjectAll').addEventListener('click', () => {
+                if (!state.powered) return;
+                resetToEmptyDisc();
+                toggleTray(true);
+            });
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFilesImport(e.target.files);
+                    e.target.value = '';
+                }
+            });
+
+            volumeSlider.addEventListener('input', (e) => {
+                state.volume = Number(e.target.value);
+                audioEngine.volume = state.volume;
+                volumePercent.textContent = `${Math.round(state.volume * 100)}%`;
+            });
+
+            progressRail.addEventListener('click', (e) => {
+                if (!state.powered || !Number.isFinite(audioEngine.duration) || audioEngine.duration <= 0) return;
+                const rect = progressRail.getBoundingClientRect();
+                const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                audioEngine.currentTime = ratio * audioEngine.duration;
+                updateVFD();
+            });
+
+            // Glisser-déposer de fichiers audio sur toute la page
+            document.body.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            document.body.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (!state.powered) return;
+                if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+                    handleFilesImport(e.dataTransfer.files);
+                }
+            });
+
+            // Démarrage à vide (NO DISC)
+            audioEngine.volume = state.volume;
+            buildHardwareControls();
+            resetToEmptyDisc();
+        });
+    </script>
+</body>
+</html>
